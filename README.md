@@ -30,7 +30,7 @@ Log Analyser is a Python-based utility for analyzing Nginx log files. It process
 
 - Python 3.6+
 - pandas >= 1.3.0
-- ZSH shell (for merge_logs.sh script)
+- Bash (the merge_logs.sh script is written for Bash)
 
 ## Installation
 
@@ -62,15 +62,15 @@ loganalyser/
 ├── logs/                  # Directory for log files
 │   ├── access.log         # Nginx access log
 │   └── error.log          # Nginx error log
-├── logtemp/                  # Temporary directory for rotated and compressed log files
-│   ├── access.log            # Nginx access log
-│   ├── access.log.1.gz       # Rotated and compressed access log
-│   ├── access.log.2.gz       # Rotated and compressed access log
-│   ├── access.log.3          # Rotated access log
-│   ├── error.log             # Nginx error log
-│   ├── error.log.1.gz        # Rotated and compressed error log
-│   ├── error.log.2.gz        # Rotated and compressed error log
-│   └── error.log.3           # Rotated error log
+├── logtemp/               # Temporary directory for rotated and compressed log files
+│   ├── access.log         # Nginx access log
+│   ├── access.log.1.gz    # Rotated and compressed access log
+│   ├── access.log.2.gz    # Rotated and compressed access log
+│   ├── access.log.3       # Rotated access log
+│   ├── error.log          # Nginx error log
+│   ├── error.log.1.gz     # Rotated and compressed error log
+│   ├── error.log.2.gz     # Rotated and compressed error log
+│   └── error.log.3        # Rotated error log
 └── analysis_results/      # Created during script execution
     ├── access_log_analysis.csv
     ├── error_log_analysis.csv
@@ -80,30 +80,22 @@ loganalyser/
 
 ## Usage
 
+### Shell Script: merge_logs.sh
+
+The merge_logs.sh script helps you prepare log files for analysis by decompressing and merging rotated logs.
+
 #### Decompressing .gz Files
 
-The merge_logs.sh script includes functionality to handle compressed log files:
+The script automatically detects and handles compressed log files:
 
-1. The script can automatically detect .gz compressed log files in the logtemp/ directory
-2. It decompresses them using gunzip while keeping the chronological order
-3. The decompression process maintains the original file structure
-4. After successful decompression, the original .gz files are removed
+1. It searches for `.gz` files in the logtemp directory
+2. Decompresses them using `gunzip` while preserving chronological order
+3. Removes the original `.gz` files after successful decompression
+4. All operations use absolute paths for reliability
 
-To enable the decompression feature, uncomment the following line in merge_logs.sh:
+#### Merging Rotated Logs
 
-```sh
-# decompress_logs
-```
-
-by changing it to:
-
-```sh
-decompress_logs
-```
-
-### Merging Rotated Logs
-
-Use the shell script to combine rotated log files:
+Run the script to combine multiple log files:
 
 ```sh
 ./merge_logs.sh
@@ -111,14 +103,14 @@ Use the shell script to combine rotated log files:
 
 This utility:
 
-1. Processes log files from the logtemp/ directory
-2. Combines them in chronological order
-3. Places the merged logs in the logs/ directory
+1. Processes log files from the logtemp directory
+2. Combines them in chronological order (oldest to newest)
+3. Places the merged logs in the logs directory
 4. Creates backups of existing files
 
-### Analyzing Log Files
+### Python Script: log_analysis.py
 
-Run the main Python script to analyze your log files:
+After preparing your log files, run the analysis script:
 
 ```sh
 python log_analysis.py
@@ -129,7 +121,7 @@ This will:
 1. Check for access.log and error.log in the logs/ directory
 2. Parse both log files using regex patterns
 3. Display summary statistics on the console
-4. Generate CSV files with the detailed analysis
+4. Generate CSV files with detailed analysis results
 5. Save problematic entries to separate files for inspection
 
 ## Output Examples
