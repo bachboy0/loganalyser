@@ -86,12 +86,6 @@ merge_logs() {
             echo "Added ${SOURCE_LOG_DIR}/${log_type}.log to ${temp_log}"
     fi
     
-    # Append the contents of the destination log file (if it exists and is not empty)
-    if [ -s "${dest_log}" ]; then
-        cat "${dest_log}" >> "${temp_log}" 2>/dev/null &&
-            echo "Added ${dest_log} to ${temp_log}"
-    fi
-
     # Move the temporary file to the destination file and change ownership
     mv "${temp_log}" "${dest_log}" && echo "Moved ${temp_log} to ${dest_log}"
     chown username:username "${dest_log}" && echo "Changed ownership of ${dest_log} to nakayamaken:nakayamaken"
